@@ -1,13 +1,4 @@
-#include <stdio.h>
-#include "./minilibx-linux/mlx.h"
 #include "so_long.h"
-
-# include <stdio.h>
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
-
 int main()
 {
 
@@ -15,7 +6,7 @@ int main()
 
     int x, y;
 
-    game->win.block_h= 360;
+    game->win.block_h= 420;
     game->win.block_w = 720;
 
     int fd = open("back.ber", O_RDONLY);
@@ -61,23 +52,23 @@ while (game->map[y])
         }
         y++;
     }
-  //  y = 5;
+   y = 0;
 
-    // while (game->map[y])
+    while (game->map[y])
     {
-        x = 5;
-        // while (game->map[y][x] != '\0')
+        x = 0;
+        while (game->map[y][x] != '\0')
         {
-           //// printf("After loading player image\n");
+           printf("After loading player image\n");
 
-            // if (game->map[y][x] == '1')
-            //     mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
-            //  if (game->map[y][x] == 'P')
-             //   mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->player.img, x*60, y*60);
-            // else if (game->map[y][x] == 'E')
-            //     mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
-            // else if (game->map[y][x] == 'C')
-            //     mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
+            if (game->map[y][x] == '1')
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
+             else if (game->map[y][x] == 'P')
+               mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->player.img, x*60, y*60);
+            else if (game->map[y][x] == 'E')
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
+            else if (game->map[y][x] == 'C')
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
 
             x++;
         }

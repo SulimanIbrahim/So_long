@@ -1,6 +1,15 @@
 #ifndef SO_LONG_H
 #define SO_LONG_H
 
+#include "get-next-line/get_next_line.h"
+#include <stdio.h>
+#include "./mlx/mlx.h"
+
+# include <stdio.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <string.h>
 
 typedef struct imgs
 {
@@ -29,11 +38,5 @@ typedef struct game
 	char **map;
 
 } t_game;
-
-
-
-
-
-#include "get-next-line/get_next_line.h"
 
 #endif
