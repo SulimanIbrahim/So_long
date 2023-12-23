@@ -6,6 +6,16 @@
 #define MAP_WIDTH 720
 #define MAP_HEIGHT 420
 
+#include "get-next-line/get_next_line.h"
+#include <stdio.h>
+#include "./mlx/mlx.h"
+
+# include <stdio.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <string.h>
+
 typedef struct imgs
 {
     void *img;
@@ -37,7 +47,6 @@ typedef struct game
 	char **map;
 
 } t_game;
-
 
 
 # include <stdio.h>

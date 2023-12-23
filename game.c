@@ -45,12 +45,27 @@ void render_game(t_game *game)
 
     int x = 0;
     int y = 0;
+
+   y = 0;
+
+
     while (game->map[y])
     {
         x = 0;
         while (game->map[y][x] != '\0')
         {
             mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->tile.img, x * 60, y * 60);
+
+
+            if (game->map[y][x] == '1')
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
+             else if (game->map[y][x] == 'P')
+               mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->player.img, x*60, y*60);
+            else if (game->map[y][x] == 'E')
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
+            else if (game->map[y][x] == 'C')
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->wall.img, x*60, y*60);
+
             x++;
         }
         y++;
