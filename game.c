@@ -1,5 +1,17 @@
 #include "so_long.h"
 
+// int	ft_strlen(const char *str)
+// {
+// 	int	len;
+
+// 	len = 0;
+// 	while (str[len] != '\0')
+// 	{
+// 		len++;
+// 	}
+// 	return (len);
+// }
+
 void putstring(char *s)
 {
     int i;
@@ -45,16 +57,21 @@ void destroy_win(t_game *game, char *str)
 }
 int	path_valid(t_game *game, int y, int x)
 {
-    t_game *temp = game;
-	if (y < 0 || x < 0 || temp->map[y][x] == 1)
+	if (game->temp_map[y][x] == '1')
 		return 0;
-	if (temp->map[y][x] == 'E')
+    if(game->temp_map[y][x] == 'C')
+        game->temp_coin++;
+	if (game->temp_map[y][x] == 'E' &&  game->temp_coin == game->coins_count)
 		return 1;
-	temp->map[y][x] = '1';
-	path_valid(temp, y - 1, x);
-	path_valid(temp, y + 1, x);
-	path_valid(temp, y, x - 1);
-	path_valid(temp, y, x + 1);
+    game->temp_map[y][x] = '1';
+	if (path_valid(game, y - 1, x))
+        return (1);
+	if(path_valid(game, y + 1, x))
+        return (1);
+	if (path_valid(game, y, x - 1))
+        return (1);
+	if (path_valid(game, y, x + 1))
+        return (1);
     return 0;
 }
 void render_map(t_game *game)
@@ -84,11 +101,31 @@ void render_map(t_game *game)
     }
 }
 
+void render_game(t_game *game)
+{
+    int x = 0;
+    int y = 0;
+
+   y = 0;
+
+
+    while (game->map[y])
+    {
+        x = 0;
+        while (game->map[y][x] != '\0')
+        {
+                mlx_put_image_to_window(game->mlx_ptr, game->win.win, game->tile.img, x*60, y*60);
+            x++;
+        }
+        y++;
+    }
+}
+
 int handle_key_press(int keycode, t_game *game)
 {
-    if (keycode == 65307)
+    if (keycode == 53)
         destroy_win(game, "Ass7a ya, Al game intahaa ya Rasta");
-    else if (keycode == 65362) // Up arrow key
+    else if (keycode == 13 || keycode == 126) // Up arrow key
     {
         if(game->map[game->player_y - 1][game->player_x] == 'E')
         {
@@ -101,12 +138,14 @@ int handle_key_press(int keycode, t_game *game)
             return 0;
         else if(game->map[game->player_y - 1][game->player_x] == 'C')
                 game->coins_count--;
+        game->map[game->player_y - 1][game->player_x] = '0';
+        render_map(game);
         game->map[game->player_y - 1][game->player_x] = 'P';
         game->map[game->player_y][game->player_x] = '0';
 
         game->player_y--;
     }
-    else if (keycode == 65364) // Down arrow key
+    else if (keycode == 1 || keycode == 125) // Down arrow key
         {
              if(game->map[game->player_y + 1][game->player_x] == 'E')
             {
@@ -120,11 +159,13 @@ int handle_key_press(int keycode, t_game *game)
                 return 0;
             else if(game->map[game->player_y + 1][game->player_x] == 'C')
                 game->coins_count--;
+            game->map[game->player_y + 1][game->player_x] = '0';
+            render_map(game);
             game->map[game->player_y + 1][game->player_x] = 'P';
             game->map[game->player_y][game->player_x] = '0';
             game->player_y++;
         }
-    else if (keycode == 65361) // Left arrow key
+    else if (keycode == 0 || keycode == 123) // Left arrow key
         {
             if(game->map[game->player_y][game->player_x - 1] == 'E')
             {
@@ -137,11 +178,13 @@ int handle_key_press(int keycode, t_game *game)
                 return 0;
             else if(game->map[game->player_y][game->player_x - 1] == 'C')
                 game->coins_count--;
+            game->map[game->player_y][game->player_x - 1] = '0';
+            render_map(game);
             game->map[game->player_y][game->player_x - 1] = 'P';
             game->map[game->player_y][game->player_x] = '0';
             game->player_x--;
         }
-    else if (keycode == 65363) // Right arrow key
+    else if (keycode == 2 || keycode == 124) // Right arrow key
         {
             if(game->map[game->player_y][game->player_x + 1] == 'E')
             {
@@ -154,6 +197,8 @@ int handle_key_press(int keycode, t_game *game)
                 return 0;
             else if(game->map[game->player_y][game->player_x + 1] == 'C')
                 game->coins_count--;
+            game->map[game->player_y][game->player_x + 1] = '0';
+            render_map(game);
             game->map[game->player_y][game->player_x + 1] = 'P';
             game->map[game->player_y][game->player_x] = '0';
             game->player_x++;
@@ -244,19 +289,17 @@ void check_map(t_game *game)
 {
     int x;
     int y;
-    int len_x;
 
     x = 0;
     y = 0;
-    len_x = 0;
-    while(game->map[y][len_x] != '\0')
-        len_x++;
+    while(game->map[y][game->width] != '\0')
+        game->width++;
     while(game->map[y])
     {
         x = 0;
         while(game->map[y][x] != '\0')
             x++;
-        if (len_x != x)
+        if (game->width != x)
             map_error(game, "Invalid map!");
         y++;
     }
@@ -266,16 +309,8 @@ void check_map_edges(t_game *game)
 {
     int x;
     int y;
-    int len_x;
-    int len_y;
 
     y = 0;
-    len_x = 0;
-    len_y = 0;
-    while(game->map[len_y])
-        len_y++;
-    while(game->map[y][len_x])
-        len_x++;
     while (game->map[y])
     {
         x = 0;
@@ -285,9 +320,9 @@ void check_map_edges(t_game *game)
                 map_error(game, "first row doesn't contain a wall");
             else if (game->map[y][0] != '1')
                 map_error(game, "first column doesn't contain a wall");
-            else if (game->map[y][len_x - 1] != '1')
+            else if (game->map[y][game->width - 1] != '1')
                 map_error(game, "last column doesn't contain a wall");
-            else if (game->map[len_y - 1][x] != '1')
+            else if (game->map[game->hieght - 1][x] != '1')
                 map_error(game, "last row doesn't contain a wall");
             x++;
         }
@@ -298,9 +333,10 @@ int main()
 {
     t_game *game = malloc(sizeof(t_game));
 
-    game->win.block_h = 420;
-    game->win.block_w = 720;
+    game->width = 0;
+    game->hieght = 0;
 
+    
     int fd = open("back.ber", O_RDONLY);
     if (fd < 0)
         exit(1);
@@ -308,6 +344,7 @@ int main()
     char *line;
     int i = 0;
     game->map = (char **)malloc((20000) * sizeof(char *));
+    game->temp_map = (char **)malloc((20000) * sizeof(char *));
     if (!game->map)
     {
         exit(1);
@@ -321,25 +358,24 @@ int main()
         while(line[j] && line[j] != '\n')
             j++;
         game->map[i] = ft_substr(line, 0 , j);
+        game->temp_map[i] = ft_substr(line, 0 , j);
         free(line);
         line = get_next_line(fd);
+        game->hieght++;
         i++;
     }
+    game->temp_map[i] = NULL;
     game->map[i] = NULL;
     close(fd);
-    game->mlx_ptr = mlx_init();
-    game->win.win = mlx_new_window(game->mlx_ptr, game->win.block_w, game->win.block_h, "My Game Window");
-
-    game->tile.img = mlx_xpm_file_to_image(game->mlx_ptr, "tile.xpm", &game->win.block_w, &game->win.block_h);
-    game->player.img = mlx_xpm_file_to_image(game->mlx_ptr, "player.xpm", &game->win.block_w, &game->win.block_h);
-    game->wall.img = mlx_xpm_file_to_image(game->mlx_ptr, "wall4.xpm", &game->win.block_w, &game->win.block_h);
-    game->coin.img = mlx_xpm_file_to_image(game->mlx_ptr, "dimond.xpm", &game->win.block_w, &game->win.block_h);
-    game->exit.img = mlx_xpm_file_to_image(game->mlx_ptr, "door.xpm", &game->win.block_w, &game->win.block_h);
     check_map(game);
     check_map_edges(game);
     check_exit(game);
     save_player_position(game);
     coins_count(game);
+    game->temp_coin = 0;
+    if(!path_valid(game, game->player_y, game->player_x))
+        map_error(game, "valid path gaaadeeeee");
+  
     if(game->coins_count == 0)
         {
             map_error(game,"that map has no collectibles");
@@ -347,8 +383,14 @@ int main()
                 free(game);
                 exit(0);
         }
-    // if(path_valid(game, 0, 0) == 0)
-    //     exit(1);
+    game->mlx_ptr = mlx_init();
+    game->win.win = mlx_new_window(game->mlx_ptr, game->width * 60, game->hieght * 60, "My Game Window");
+    game->tile.img = mlx_xpm_file_to_image(game->mlx_ptr, "tile.xpm", &game->width, &game->hieght);
+    game->player.img = mlx_xpm_file_to_image(game->mlx_ptr, "player.xpm", &game->width, &game->hieght);
+    game->wall.img = mlx_xpm_file_to_image(game->mlx_ptr, "wall4.xpm", &game->width, &game->hieght);
+    game->coin.img = mlx_xpm_file_to_image(game->mlx_ptr, "dimond.xpm", &game->width, &game->hieght);
+    game->exit.img = mlx_xpm_file_to_image(game->mlx_ptr, "door.xpm", &game->width, &game->hieght);
+    render_game(game);
     render_map(game);
     mlx_hook(game->win.win, KeyPress, KeyPressMask, handle_key_press, game);
     mlx_loop(game->mlx_ptr);
