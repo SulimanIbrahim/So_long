@@ -1,16 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   so_long.h                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/12/26 11:33:48 by suibrahi          #+#    #+#             */
+/*   Updated: 2023/12/26 21:42:52 by suibrahi         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef SO_LONG_H
-#define SO_LONG_H
+# define SO_LONG_H
+# define KEYPRESS 2
 
-#define KeyPress 2
-#define KeyPressMask (1L<<0)
-#define MAP_WIDTH 720
-#define MAP_HEIGHT 420
 
-#include "get-next-line/get_next_line.h"
-#include <stdio.h>
-#include "./mlx/mlx.h"
-
+# include "get-next-line/get_next_line.h"
 # include <stdio.h>
+# include "./mlx/mlx.h"
 # include <fcntl.h>
 # include <unistd.h>
 # include <stdlib.h>
@@ -18,45 +25,63 @@
 
 typedef struct imgs
 {
-    void *img;
+	void	*img;
 
-} t_imgs;
+}	t_imgs;
 typedef struct win
 {
-    void *win;
-    int block_w;
-    int block_h;
+	void	*win;
+	int		block_w;
+	int		block_h;
 
-} t_win;
+}	t_win;
 
 typedef struct game
 {
-    void *mlx_ptr;
-    t_win win;
- 	t_imgs player;
-	t_imgs tile;
-	t_imgs wall;
-	t_imgs coin;
-    t_imgs exit;
-    int player_x;
-    int player_y;
-    int x;
-    int y;
-    int coins_count;
-    int exit_count;
-	char **map;
+	void	*mlx_ptr;
+	t_win	win;
+	t_imgs	player;
+	t_imgs	tile;
+	t_imgs	wall;
+	t_imgs	coin;
+	t_imgs	exit;
+	int		player_x;
+	int		player_y;
+	int		x;
+	int		y;
+	int		coins_count;
+	int		exit_count;
+	char	**map;
+	char	**temp_map;
+	int		temp_coin;
+	int		temp_exit;
+	int		width;
+	int		hieght;
+	int		temp_exit_count;
+	int		flag_over_exit;
 
-} t_game;
+}			t_game;
 
+// main functions 
+int		handle_key_press(int keycode, t_game *game);
+// render functions 
+void	render_map(t_game *game);
+void	render_game(t_game *game);
+// so_long utils functions
+void	save_player_position(t_game *game);
+void	putstring(char *s);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+void	coins_count(t_game *game);
+// parsing functions
+void	parsing(t_game *game);
+void	check_exit(t_game *game);
+void	check_map_edges(t_game *game);
+int		path_valid(t_game *game, int y, int x);
+void	check_map(t_game *game);
+// error messages functions 
+void	map_error(t_game *game, char *str);
+void	destroy_win(t_game *game, char *str);
 
-# include <stdio.h>
-# include <fcntl.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include <string.h>
-#include "get-next-line/get_next_line.h"
-#include "./minilibx-linux/mlx.h"
-
-int handle_key_press(int keycode, t_game *game);
+int		handle_key_press(int keycode, t_game *game);
 
 #endif
