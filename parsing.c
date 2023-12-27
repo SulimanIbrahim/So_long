@@ -6,7 +6,7 @@
 /*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 07:32:49 by suibrahi          #+#    #+#             */
-/*   Updated: 2023/12/27 01:13:23 by suibrahi         ###   ########.fr       */
+/*   Updated: 2023/12/27 22:08:45 by suibrahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	check_exit(t_game *game)
 
 void	check_map_edges(t_game *game)
 {
-
 	game->y = 0;
 	while (game->map[game->y])
 	{
@@ -94,7 +93,7 @@ void	check_map(t_game *game)
 	}
 }
 
-void parsing(t_game *game)
+void	parsing(t_game *game)
 {
 	check_map(game);
 	check_map_edges(game);
@@ -103,14 +102,9 @@ void parsing(t_game *game)
 	coins_count(game);
 	game->temp_coin = 0;
 	game->temp_exit_count = 0;
-	if(!path_valid(game, game->player_y, game->player_x) && (game->temp_exit_count == 0 || game->temp_coin != game->coins_count))
-		map_error(game, "valid path gaaadeeeee");
-	
-	if(game->coins_count == 0)
-		{
-			map_error(game,"that map has no collectibles");
-			 mlx_destroy_window(game->mlx_ptr, game->win.win);
-				free(game);
-				exit(0);
-		}
+	if (!path_valid(game, game->p_y, game->p_x)
+		&& (game->temp_exit_count == 0 || game->temp_coin != game->coins_count))
+		map_error(game, "Invalid path for player");
+	if (game->coins_count == 0)
+		map_error(game, "that map has no collectibles");
 }
