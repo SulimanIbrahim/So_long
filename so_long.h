@@ -6,7 +6,7 @@
 /*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 11:33:48 by suibrahi          #+#    #+#             */
-/*   Updated: 2023/12/27 22:50:02 by suibrahi         ###   ########.fr       */
+/*   Updated: 2023/12/30 11:30:06 by suibrahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,5 @@ void	check_map(t_game *game);
 void	map_error(t_game *game, char *str);
 void	read_error(t_game *game, char *line, char *str);
 void	destroy_win(t_game *game, char *str);
-
 
 #endif

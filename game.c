@@ -6,7 +6,7 @@
 /*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 06:49:45 by suibrahi          #+#    #+#             */
-/*   Updated: 2023/12/27 22:53:02 by suibrahi         ###   ########.fr       */
+/*   Updated: 2023/12/30 15:06:25 by suibrahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,24 +49,24 @@ static int	size_for_malloc(int fd)
 		free(line);
 		line = get_next_line(fd);
 	}
-	close(fd);
 	free(line);
 	return (len);
 }
 
-void	s7lb_emergency(t_game *game, int fd, char *line)
+void	s7lb_emergency(t_game *game, char *av, int fd, char *line)
 {
 	game->hieght = size_for_malloc(fd);
-	fd = open(av[1], O_RDONLY);
-	if (fd < 0)
-		read_error(game, line, "fail opening the file");
+	close(fd);
 	game->map = (char **)malloc((game->hieght + 1) * sizeof(char *));
 	game->temp_map = (char **)malloc((game->hieght + 1) * sizeof(char *));
 	if (!game->map || !game->temp_map)
 		read_error(game, line, "empty line");
+	fd = open(av, O_RDONLY);
+	if (fd < 0)
+		read_error(game, line, "fail opening the file1");
 }
 
-void	read_the_map(t_game *game, int fd)
+static void	read_the_map(t_game *game, char *av, int fd)
 {
 	char	*line;
 	int		i;
@@ -74,7 +74,7 @@ void	read_the_map(t_game *game, int fd)
 
 	i = 0;
 	line = NULL;
-	s7lb_emergency(game, fd, line);
+	s7lb_emergency(game, av, fd, line);
 	line = get_next_line(fd);
 	if (line == NULL)
 		return (free(game->map), free(game->temp_map), free(game), exit(1));
@@ -95,6 +95,43 @@ void	read_the_map(t_game *game, int fd)
 	close (fd);
 }
 
+int	ft_strncmp(const char *s1, const char *s2, size_t n)
+{
+	size_t	i;
+
+	i = 0;
+	if (n == 0)
+	{
+		return (0);
+	}
+	while (i < n - 1 && s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
+	{
+		i++;
+	}
+	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+}
+static void check_extention(char *av)
+{
+	int		len;
+
+	len = ft_strlen(av);
+	printf("len = %d\n", len);
+	av = (av + len - 4);
+	// printf("av = %c\n", av[16]);
+	if (*av != '\0')
+	{
+		if (ft_strncmp(av, ".ber", 4) == 0)
+			return ;
+		else
+		{
+			printf("invalid extention\n");
+			exit(1);
+		}
+	}
+	else
+		exit(1);
+}
+
 int	main(int ac, char **av)
 {
 	t_game	*game;
@@ -102,6 +139,7 @@ int	main(int ac, char **av)
 
 	if (ac == 2)
 	{
+		check_extention(av[1]);
 		game = NULL;
 		game = ft_calloc(sizeof(t_game), sizeof(t_game));
 		if (!game)
@@ -112,10 +150,10 @@ int	main(int ac, char **av)
 		game->width = 0;
 		game->hieght = 0;
 		game->move_count = 0;
-		read_the_map(game, fd);
+		read_the_map(game, av[1], fd);
 		game->flag_over_exit = 0;
 		parsing(game);
-		get_started(game);
+		// get_started(game);
 	}
 	else
 		exit(1);
