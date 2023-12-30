@@ -6,7 +6,7 @@
 /*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 06:49:45 by suibrahi          #+#    #+#             */
-/*   Updated: 2023/12/30 15:06:25 by suibrahi         ###   ########.fr       */
+/*   Updated: 2023/12/30 21:03:05 by suibrahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	get_started(t_game *game)
 {
 	game->mlx_ptr = mlx_init();
 	game->win.win = mlx_new_window(game->mlx_ptr, game->width * 60, 
-			game->hieght * 60, "LAVA CAVE GAME");
+			game->hieght * 60, "So Long");
 	game->tile.img = mlx_xpm_file_to_image(game->mlx_ptr, 
 			"./textures/tilelava.xpm", &game->width, &game->hieght);
 	game->player.img = mlx_xpm_file_to_image(game->mlx_ptr, 
@@ -27,8 +27,11 @@ void	get_started(t_game *game)
 			"./textures/assets.xpm", &game->width, &game->hieght);
 	game->exit.img = mlx_xpm_file_to_image(game->mlx_ptr, 
 			"./textures/exitcave.xpm", &game->width, &game->hieght);
+	game->temp.img = mlx_xpm_file_to_image(game->mlx_ptr, 
+			"./textures/player-left.xpm", &game->width, &game->hieght);
 	if (!game->win.win || !game->tile.img || !game->player.img || 
-		!game->wall.img || !game->coin.img || !game->exit.img)
+		!game->wall.img || !game->coin.img || !game->exit.img || 
+		!game->temp.img)
 		map_error(game, "fail to upload the image");
 	render_game(game);
 	render_map(game);
@@ -95,43 +98,6 @@ static void	read_the_map(t_game *game, char *av, int fd)
 	close (fd);
 }
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	if (n == 0)
-	{
-		return (0);
-	}
-	while (i < n - 1 && s1[i] != '\0' && s2[i] != '\0' && s1[i] == s2[i])
-	{
-		i++;
-	}
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
-}
-static void check_extention(char *av)
-{
-	int		len;
-
-	len = ft_strlen(av);
-	printf("len = %d\n", len);
-	av = (av + len - 4);
-	// printf("av = %c\n", av[16]);
-	if (*av != '\0')
-	{
-		if (ft_strncmp(av, ".ber", 4) == 0)
-			return ;
-		else
-		{
-			printf("invalid extention\n");
-			exit(1);
-		}
-	}
-	else
-		exit(1);
-}
-
 int	main(int ac, char **av)
 {
 	t_game	*game;
@@ -140,7 +106,6 @@ int	main(int ac, char **av)
 	if (ac == 2)
 	{
 		check_extention(av[1]);
-		game = NULL;
 		game = ft_calloc(sizeof(t_game), sizeof(t_game));
 		if (!game)
 			return (0);
@@ -153,7 +118,7 @@ int	main(int ac, char **av)
 		read_the_map(game, av[1], fd);
 		game->flag_over_exit = 0;
 		parsing(game);
-		// get_started(game);
+		get_started(game);
 	}
 	else
 		exit(1);

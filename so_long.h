@@ -6,7 +6,7 @@
 /*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 11:33:48 by suibrahi          #+#    #+#             */
-/*   Updated: 2023/12/30 11:30:06 by suibrahi         ###   ########.fr       */
+/*   Updated: 2023/12/30 20:50:25 by suibrahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,11 @@
 # define SO_LONG_H
 # define KEYPRESS 2
 
-
 # include "get-next-line/get_next_line.h"
 # include "ft_printf/ft_printf.h"
+# include "libft/libft.h"
 # include <stdio.h>
+# include <stdint.h>
 # include "./mlx/mlx.h"
 # include <fcntl.h>
 # include <unistd.h>
@@ -46,6 +47,7 @@ typedef struct game
 	t_imgs	wall;
 	t_imgs	coin;
 	t_imgs	exit;
+	t_imgs	temp;
 	int		p_x;
 	int		p_y;
 	int		x;
@@ -60,7 +62,7 @@ typedef struct game
 	int		hieght;
 	int		temp_exit_count;
 	int		flag_over_exit;
-	int 	move_count;
+	int		move_count;
 }			t_game;
 
 // main functions 
@@ -69,6 +71,7 @@ int		handle_key_press(int keycode, t_game *game);
 void	render_map(t_game *game);
 void	render_game(t_game *game);
 void	move_count(t_game *game);
+void	check_extention(char *av);
 // so_long utils functions
 void	save_player_position(t_game *game);
 void	putstring(char *s);

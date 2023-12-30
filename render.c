@@ -6,7 +6,7 @@
 /*   By: suibrahi <suibrahi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/26 07:41:11 by suibrahi          #+#    #+#             */
-/*   Updated: 2023/12/27 22:42:04 by suibrahi         ###   ########.fr       */
+/*   Updated: 2023/12/30 20:45:49 by suibrahi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,24 @@ void	move_count(t_game *game)
 {
 	game->move_count++;
 	ft_printf("number of moves : %d\n", game->move_count);
+}
+
+void	check_extention(char *av)
+{
+	int		len;
+
+	len = ft_strlen(av);
+	av = (av + len - 4);
+	if (*av != '\0')
+	{
+		if (ft_strncmp(av, ".ber", 4) == 0)
+			return ;
+		else
+		{
+			ft_printf("invalid extention\n");
+			exit(1);
+		}
+	}
+	else
+		exit(1);
 }
